@@ -14,7 +14,7 @@ The app developed for this project is not deployed due to cost concerns, you can
 ![AppImage](https://steam-discount-predictor.s3-us-west-2.amazonaws.com/static/bus_tracker_pic.JPG)
 
 Primary data source: 
-    Moosavi, Sobhan, Mohammad Hossein Samavatian, Arnab Nandi, Srinivasan Parthasarathy, and Rajiv Ramnath. “Short and Long-term Pattern Discovery Over Large-Scale Geo-Spatiotemporal Data.” In proceedings of the 25th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining, ACM, 2019.
+    [“Short and Long-term Pattern Discovery Over Large-Scale Geo-Spatiotemporal Data.”](https://smoosavi.org/datasets/lstw) 
 ------------
 
 Project Organization
