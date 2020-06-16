@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seattle bus map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+    integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+    crossorigin=""></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="http://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <script src="js/leaflet-providers.js"></script>
+  <!-- NEW CODE ADDED FOR TABLE DESIGN-->
+  <style>
+      body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #191A1A;
+        }
+
+        /* SCROLL BAR */
+        .scrollbar {
+            height: 98vh;
+            overflow-y: scroll;
+        }
+
+        #style-1::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            background-color: gray;
+        }
+
+        #style-1::-webkit-scrollbar {
+            width: 7px;
+            background-color: gray;
+        }
+
+        #style-1::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+            background-color: #555;
+        }
+
+        /* SCROLL BAR END*/
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td,
+        th {
+            text-align: left;
+            padding: 8px;
+            /* background: gray; */
+            /* opacity: 0.5; */
+            background: rgba(232, 223, 223, 0.2);
+            font-size: 11pt;
+        }
+
+        .text_color {
+            color: white;
+        }
+
+        .map_design {
+            width: 100%;
+            height: 99vh;
+            position: relative;
+            outline: none;
+        }
+
+        .table_height {
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .background-gray {
+            /* background-color: gray; */
+            background-color: rgba(245, 240, 240, 0.2);
+        }
+
+        .background-orange {
+            /* background-color: #90560f; */
+            background: rgba(236, 126, 13, 0.3);
+        }
+
+        #wrapper {
+            position: relative;
+        }
+
+        .descrip-text-color {
+            color: #c3c3c3;
+        }
+
+        .f24 {
+            font-size: 18px;
+        }
+
+        .f18 {
+            font-size: 12px;
+        }
+
+        .f15 {
+            font-size: 9px;
+        }
+
+        .m-0 {
+            margin: 0px;
+        }
+
+        .link-color {
+            color: #38f;
+        }
+
+        .m-t-15 {
+            margin-top: 15px;
+        }
+
+        a:link {
+            text-decoration: none;
+        }
+
+        #over_map_table {
+            position: absolute;
+            top: 2px;
+            right: 0px;
+            z-index: 99999;
+            width: 30%;
+        }
+
+        #over_map_div {
+            position: absolute;
+            bottom: 10px;
+            left: 15px;
+            z-index: 99999;
+        }
+</style>
+<!------------------------------------------>
+
+</head>
+<body>
+    <!-- NEW HTML -->
+    <div id="wrapper">
+        <div id="mapid" class="map_design"></div>
+        <div id="over_map_table">
+            <div class="scrollbar" id="style-1">
+                <div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 55px;">Bus ID</th>
+                                <th style="width: 156px;">Message</th>
+                                <th>Timestamp</th>
+                                <th>Coordinates</th>
+                            </tr>
+                        </thead>
+                        <tbody id="MessagesTable" class="text_color">
+                            <!-- <tr>
+                                <td>01</td>
+                                <td>No Congestion Detected</td>
+                                <td>2020-6-13 9:47:38</td>
+                                <td>47.6398, -122.37031</td>
+                            </tr>
+                            <tr>
+                                <td>02</td>
+                                <td>No Congestion Detected</td>
+                                <td>2020-6-13 9:47:38</td>
+                                <td>47.6398, -122.37031</td>
+                            </tr>
+                            <tr class="background-gray">
+                                <td>03</td>
+                                <td>Congestion Detected, estimated duration: 47:68 minutes. This is normal, please be
+                                    patient.</td>
+                                <td>2020-6-13 9:47:38</td>
+                                <td>47.6398, -122.37031</td>
+                            </tr>
+                            <tr>
+                                <td>01</td>
+                                <td>No Congestion Detected</td>
+                                <td>2020-6-13 9:47:38</td>
+                                <td>47.6398, -122.37031</td>
+                            </tr>
+                            <tr>
+                                <td>01</td>
+                                <td>No Congestion Detected</td>
+                                <td>2020-6-13 9:47:38</td>
+                                <td>47.6398, -122.37031</td>
+                            </tr>
+                            <tr>
+                                <td>01</td>
+                                <td>No Congestion Detected</td>
+                                <td>2020-6-13 9:47:38</td>
+                                <td>47.6398, -122.37031</td>
+                            </tr>
+                            <tr class="background-orange">
+                                <td>03</td>
+                                <td>Congestion Detected, estimated duration: 92:21 minutes. !!!This is an anomaly!!!
+                                    Please contact local traffic authorities</td>
+                                <td>2020-6-13 9:47:38</td>
+                                <td>47.6398, -122.37031</td>
+                            </tr>
+                            <tr>
+                                <td>01</td>
+                                <td>No Congestion Detected</td>
+                                <td>2020-6-13 9:47:38</td>
+                                <td>47.6398, -122.37031</td>
+                            </tr>
+                            <tr>
+                                <td>01</td>
+                                <td>No Congestion Detected</td>
+                                <td>2020-6-13 9:47:38</td>
+                                <td>47.6398, -122.37031</td>
+                            </tr>
+                            <tr class="background-gray">
+                                <td>03</td>
+                                <td>Congestion Detected, estimated duration: 47:68 minutes. This is normal, please be
+                                    patient.</td>
+                                <td>2020-6-13 9:47:38</td>
+                                <td>47.6398, -122.37031</td>
+                            </tr>
+                            <tr>
+                                <td>01</td>
+                                <td>No Congestion Detected</td>
+                                <td>2020-6-13 9:47:38</td>
+                                <td>47.6398, -122.37031</td>
+                            </tr>
+                            <tr>
+                                <td>01</td>
+                                <td>No Congestion Detected</td>
+                                <td>2020-6-13 9:47:38</td>
+                                <td>47.6398, -122.37031</td>
+                            </tr>
+                            <tr>
+                                <td>01</td>
+                                <td>No Congestion Detected</td>
+                                <td>2020-6-13 9:47:38</td>
+                                <td>47.6398, -122.37031</td>
+                            </tr>
+                            <tr class="background-gray">
+                                <td>03</td>
+                                <td>Congestion Detected, estimated duration: 47:68 minutes. This is normal, please be
+                                    patient.</td>
+                                <td>2020-6-13 9:47:38</td>
+                                <td>47.6398, -122.37031</td>
+                            </tr>
+                            <tr class="background-gray">
+                                <td>03</td>
+                                <td>Congestion Detected, estimated duration: 47:68 minutes. This is normal, please be
+                                    patient.</td>
+                                <td>2020-6-13 9:47:38</td>
+                                <td>47.6398, -122.37031</td>
+                            </tr>
+                            <tr class="background-gray">
+                                <td>03</td>
+                                <td>Congestion Detected, estimated duration: 47:68 minutes. This is normal, please be
+                                    patient.</td>
+                                <td>2020-6-13 9:47:38</td>
+                                <td>47.6398, -122.37031</td>
+                            </tr>
+                            <tr>
+                                <td>01</td>
+                                <td>No Congestion Detected</td>
+                                <td>2020-6-13 9:47:38</td>
+                                <td>47.6398, -122.37031</td>
+                            </tr>
+                            <tr>
+                                <td>01</td>
+                                <td>No Congestion Detected</td>
+                                <td>2020-6-13 9:47:38</td>
+                                <td>47.6398, -122.37031</td>
+                            </tr>
+                            <tr>
+                                <td>01</td>
+                                <td>No Congestion Detected</td>
+                                <td>2020-6-13 9:47:38</td>
+                                <td>47.6398, -122.37031</td>
+                            </tr> -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="over_map_div">
+            <div>
+                <div class="descrip-text-color f18">Seattle, WA</div>
+                <div>
+                    <h1 style="color: white;" class="m-0">Live Bus Tracker</h1>
+                </div>
+                <div>
+                    <p class="descrip-text-color m-0 f15"> Congestion Duration Prediction - Anomaly Detection</p>
+                </div>
+
+                <div class="m-t-15">
+                    <span class="descrip-text-color">Live Bus Data: </span>
+                    <span><a href="https://www.kingcounty.gov/depts/transportation/metro/travel-options/bus/app-center/developer-resources.aspx" target="_blank" class="link-color">King Country Metro API
+                        </a> </span>
+                </div>
+                <div class="m-t-15">
+                    <span class="descrip-text-color">Live Traffic Flow data: </span>
+                    <span><a href="https://developer.tomtom.com/content/traffic-api-explorer#/Traffic%20Flow/get_traffic_services__versionNumber__flowSegmentData__style___zoom___format_" target="_blank" class="link-color">TomTom API</a> </span>
+                </div>
+                <div>
+                    <p class="descrip-text-color">by: <span class="link-color">Da Guo</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    // NEW CODE IS ADDED FOR TESTING IN LOCAL ENVIROMENT
+
+        // var Data = new Array();
+        // var Sr_Number = 1;
+        // var content = 
+        // setInterval(function(){
+        //     Data = [];
+        //     Data.push({"Message":'Message '+Sr_Number,"TimeStamp": "01-06-2020 14:40:20", "latitude":Number(Math.random().toFixed(2)) ,"longtitude":Number(Math.random().toFixed(2))});
+        //         content = '<tr>';
+        //         content += '<td>'+Sr_Number+'</td>';
+        //         content += '<td>'+Data[0].Message+'</td>';
+        //         content += '<td>'+Data[0].TimeStamp+'</td>';
+        //         content += '<td>'+Data[0].longtitude +',' + Data[0].latitude+'</td>';
+        //         content += '</tr>';
+        //         Sr_Number +=1;
+        //        $('#MessagesTable').prepend(content);
+        // }, 3000);
+
+        //----------------------------------------
+        var mymap = L.map('mapid').setView([47.7585, -122.2622], 13);
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+            // id: 'mapbox/streets-v11',
+            id: 'mapbox/dark-v9', // TO CONVERT MAP INTO DARK MODE
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: 'access_token'
+        }).addTo(mymap);
+        
+        //------- dark theme map, leaflet-providers.js is included in the headers and js folder under static --------
+        // var Stadia_AlidadeSmoothDark = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+        //     maxZoom: 20,
+        //     attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+        // });
+
+        // L.tileLayer.provider('Stadia.AlidadeSmoothDark').addTo(mymap);
+        //------- dark theme map --------
+
+        mapMarkers1=[];
+        mapMarkers2=[];
+        mapMarkers3=[];
+        function onlyUnique(value, index, self) { 
+            return self.indexOf(value) === index;
+        };
+        function array_for_each(item, index) {
+            var name = 'Line_' + item;
+            busline_loca[name] = new Array();
+        }
+        var custommarker3 = {
+        }
+
+        // MAP ICONS HERE
+        var MapIcon = L.Icon.extend({
+            options: {
+                iconSize: [55, 90],
+                // shadowSize:   [50, 64],
+                // iconAnchor:   [22, 94],
+                // shadowAnchor: [4, 62],
+                // popupAnchor:  [-3, -76]
+            }
+        });
+
+        var Icon1 = new MapIcon({ iconUrl: '../static/images/Asset 1.png' }),
+            Icon2 = new MapIcon({ iconUrl: '../static/images/Asset 2.png' }),
+            Icon3 = new MapIcon({ iconUrl: '../static/images/Asset 3.png' });
+
+
+        var source = new EventSource('/topic/geodata_final123');
+        source.addEventListener('message', function(e){
+            console.log('Message');
+            obj = JSON.parse(e.data);
+            console.log(obj);
+            if(obj.busline == '4307') {
+                for (var i = 0; i < mapMarkers1.length; i++) {
+                    mymap.removeLayer(mapMarkers1[i]);
+                }
+                marker1 = L.marker([obj.latitude, obj.longitude], { icon: Icon1 }).addTo(mymap);
+                mapMarkers1.push(marker1)
+            }
+
+            if(obj.busline == '4316') {
+                for (var i = 0; i < mapMarkers2.length; i++) {
+                    mymap.removeLayer(mapMarkers2[i]);
+                }
+                marker2 = L.marker([obj.latitude, obj.longitude], { icon: Icon2 }).addTo(mymap);
+                mapMarkers2.push(marker2)
+            }
+
+            if(obj.busline == '4324') {
+                for (var i = 0; i < mapMarkers3.length; i++) {
+                    mymap.removeLayer(mapMarkers3[i]);
+                }
+                marker3 = L.marker([obj.latitude, obj.longitude], { icon: Icon3 }).addTo(mymap);
+                mapMarkers3.push(marker3)
+            }
+
+            // NEW CODE IS ADDED FOR TABLE RENDERING
+            if(obj!=null && obj!=undefined){
+                content ="";
+                // COLOR OF ROWS CHECK HERE
+
+                // NO CONGESTION
+                if(obj.status == 0)
+                {
+                    content = '<tr>'; 
+                }
+                // CONGESTION BUT NORMAL
+                 else if(obj.status == 1)
+                {
+                    content = '<tr class="background-gray">'; 
+                }
+                // CONGESTION BUT NOT NORMAL
+                else if(obj.status == 2)
+                {
+                    content = '<tr class="background-orange">'; 
+                }
+                
+                content += '<td>'+obj.busline+'</td>';
+                content += '<td>'+obj.msg+'</td>';
+                content += '<td>'+obj.timestamp+'</td>';
+                content += '<td>'+obj.latitude+',' + obj.longitude +'</td>';
+                content += '</tr>';
+                $('#MessagesTable').prepend(content);
+            }
+            //----------------------------------------
+
+        }, false)
+    </script>
+</body>
+</html>
