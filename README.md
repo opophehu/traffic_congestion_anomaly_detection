@@ -15,7 +15,6 @@ The app developed for this project is not deployed due to cost concerns, you can
 
 Primary data source: 
     [“Short and Long-term Pattern Discovery Over Large-Scale Geo-Spatiotemporal Data.”](https://smoosavi.org/datasets/lstw) 
-------------
 
 Project Organization
 ------------
