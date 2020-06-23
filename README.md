@@ -5,7 +5,7 @@ You can read more about the project on [Medium](https://medium.com/@opophehu/pla
 
 ![ProjImage](https://steam-discount-predictor.s3-us-west-2.amazonaws.com/static/p5.jpg)
 
-A data science project aimed at understanding traffic congestions in terms of duration and its anomalies primarily in WA state, but scalable.
+A data science project aimed at understanding traffic congestions in terms of duration and its anomalies primarily in WA state. Pipelines are built to be but scalable to all of US.
 
 The project is twofold: a regression model to predict the duration of congestion if it happens, leading into a anomaly detector to see if early intervention is necessary.
 
